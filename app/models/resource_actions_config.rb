@@ -244,6 +244,18 @@ class ResourceActionsConfig
       }
     },
 
+    ai_knowledge: {
+      name: 'Knowledge Base',
+      description: 'Reviewed operational knowledge for AI agents',
+      actions: {
+        read: { name: 'View', description: 'Read knowledge articles' },
+        create: { name: 'Create', description: 'Create knowledge drafts' },
+        update: { name: 'Edit', description: 'Edit permitted knowledge drafts' },
+        delete: { name: 'Delete', description: 'Delete knowledge articles' },
+        publish: { name: 'Publish', description: 'Review and publish operational knowledge' }
+      }
+    },
+
     ai_custom_mcp_servers: {
       name: 'Custom MCP Servers',
       description: 'Custom Model Context Protocol server management',

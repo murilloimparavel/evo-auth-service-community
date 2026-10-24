@@ -71,6 +71,7 @@ else
 end
 
 agent_permissions = [
+  'ai_knowledge.read', 'ai_knowledge.create', 'ai_knowledge.update',
   # Operational reads previously inherited via BASIC_READ_PERMISSIONS. Now that
   # the split removed users.read/inboxes.read from BASIC, the agent role grants
   # them explicitly. The agent is SECURE-BY-DEFAULT for inbox visibility: it does
