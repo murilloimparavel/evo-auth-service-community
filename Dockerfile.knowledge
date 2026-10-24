@@ -1,0 +1,4 @@
+FROM evoapicloud/evo-auth-service-community@sha256:820164b846bea44ac9703b2dc6c9ebc9c6224b42bceff7b28fef49ca80d7fc13
+COPY app/models/resource_actions_config.rb /rails/app/models/resource_actions_config.rb
+COPY db/migrate/20261024130000_grant_ai_knowledge_permissions.rb /rails/db/migrate/20261024130000_grant_ai_knowledge_permissions.rb
+COPY db/seeds/rbac.rb /rails/db/seeds/rbac.rb
