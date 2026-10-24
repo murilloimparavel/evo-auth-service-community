@@ -23,4 +23,4 @@ jobs:
           context: .
           file: Dockerfile.knowledge
           push: true
-          tags: ghcr.io/murilloimparavel/crcn-knowledge-auth:sha-${{ github.event.pull_request.head.sha }}
+          tags: ghcr.io/murilloimparavel/evo-auth-knowledge-release:sha-${{ github.event.pull_request.head.sha }}
