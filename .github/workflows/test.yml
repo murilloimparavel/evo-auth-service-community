@@ -11,10 +11,18 @@ on:
   push:
     branches: [develop, main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-quality-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   rspec:
     name: RSpec
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     services:
       postgres:
@@ -50,7 +58,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           # Reads .ruby-version; bundler-cache handles install + gem caching.
-          ruby-version-file: .ruby-version
           bundler-cache: true
 
       - name: Prepare database
@@ -67,3 +74,40 @@ jobs:
         run: |
           bundle exec rspec --order defined --format progress \
             --exclude-pattern "**/{account,setup_bootstrap,resource_actions_default_deny}_spec.rb"
+
+  pr-ready:
+    name: PR ready
+    if: always()
+    needs: [rspec, workflow-lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require successful validation
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY_GATE'
+          import json, os
+          results = json.loads(os.environ['RESULTS'])
+          failed = [job for job, result in results.items() if result['result'] != 'success']
+          if failed:
+              raise SystemExit('Required validation did not succeed: ' + ', '.join(failed))
+          print('All required PR checks passed')
+          PY_GATE
+
+  workflow-lint:
+    name: Validate GitHub Actions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+        with:
+          go-version: '1.24.4'
+          cache: false
+      - name: Install pinned actionlint
+        run: go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.7
+      - name: Validate workflows
+        run: actionlint -shellcheck= -pyflakes=
