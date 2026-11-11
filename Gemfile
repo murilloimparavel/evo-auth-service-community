@@ -2,8 +2,8 @@ source "https://rubygems.org"
 
 ruby '~> 3.4.0'
 
-# Rails Framework - matching Evolution version
-gem "rails", "~> 7.2.3"
+# Rails framework - current supported security release
+gem "rails", "~> 8.1.4.1"
 # Use postgresql as the database for Active Record
 gem "pg"
 # Use the Puma web server
@@ -11,7 +11,7 @@ gem "puma"
 
 ##--- gems for authentication & authorization ---##
 gem 'devise', '>= 4.9.4'
-gem 'devise-secure_password', git: 'https://github.com/chatwoot/devise-secure_password', branch: 'chatwoot'
+gem 'devise-secure_password', '2.2.1'
 gem 'devise_token_auth', '>= 1.2.3'
 
 # authorization
