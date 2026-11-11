@@ -1,9 +1,9 @@
 source "https://rubygems.org"
 
-ruby '3.4.4'
+ruby '~> 3.4.0'
 
 # Rails Framework - matching Evolution version
-gem "rails", "~> 7.1"
+gem "rails", "~> 7.2.3"
 # Use postgresql as the database for Active Record
 gem "pg"
 # Use the Puma web server

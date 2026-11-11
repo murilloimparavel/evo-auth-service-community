@@ -3,14 +3,14 @@
 # =============================================================================
 
 # Use Ruby 3.4.4 as specified in the project
-ARG RUBY_VERSION=3.4.4
+ARG RUBY_VERSION=3.4.12
 FROM ruby:$RUBY_VERSION-slim
 
 # Set working directory
 WORKDIR /rails
 
 # Install system dependencies
-RUN apt-get update -qq && \
+RUN apt-get update -qq && apt-get upgrade -y && \
     apt-get install --no-install-recommends -y \
     build-essential \
     curl \
