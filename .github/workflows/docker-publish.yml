@@ -31,11 +31,6 @@ jobs:
 
       - uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
 
-      - uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
       - name: Resolve PR tags
         id: tags
         env:
@@ -52,7 +47,7 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
-          push: true
+          push: false
           tags: ${{ steps.tags.outputs.tags }}
           # EVO-1999: deploy images must bake RAILS_ENV=production (the Dockerfile
           # defaults to development for the local compose).
