@@ -1,10 +1,11 @@
-# Smoke EVO-1404 — fresh DB validation against published :latest
+# Fresh DB smoke against a local image build. Production GHCR images are built
+# and published by the umbrella repository's gated release workflow.
 #
-# Sobe Postgres limpo + Redis e roda a image evoapicloud/evo-auth-service-community:latest
+# Sobe Postgres limpo + Redis e roda a imagem GHCR do Auth
 # usando o entrypoint padrao (bin/docker-entrypoint), exercitando db:migrate end-to-end.
 # Healthcheck verde + /ready 200 = AC2 satisfeito.
 #
-# RAILS_ENV=development por design: o Dockerfile publicado roda em development
+# RAILS_ENV=development por design: este smoke usa build local em development
 # (sem assets:precompile, bundle com todos os groups). Forcar production aqui
 # quebraria por motivos nao relacionados ao AC.
 
@@ -30,7 +31,7 @@ services:
       retries: 20
 
   evo-auth:
-    image: evoapicloud/evo-auth-service-community:latest
+    image: ${SMOKE_IMAGE:-evo-auth-service-community:smoke}
     depends_on:
       postgres: { condition: service_healthy }
       redis:    { condition: service_healthy }
@@ -39,7 +40,7 @@ services:
     env_file:
       - .env.example
     environment:
-      # TODO(EVO-1404 review L3): hoje o Dockerfile publicado e dev-only. Se um PR
+      # TODO(EVO-1404 review L3): hoje o Dockerfile deste smoke e dev-only. Se um PR
       # futuro mudar pra multi-stage prod, este RAILS_ENV vai mascarar regressao.
       # Parametrizar via SMOKE_RAILS_ENV quando esse refactor chegar.
       RAILS_ENV: ${SMOKE_RAILS_ENV:-development}
