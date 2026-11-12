@@ -1,21 +1,20 @@
 source "https://rubygems.org"
 
-ruby '3.4.4'
+ruby '3.4.12'
 
 # Rails Framework - matching Evolution version
-gem "rails", "~> 7.1"
+gem "rails", "~> 8.0.5.2"
+# Rails 8.0 requires Ruby >= 3.2. Security fixes are kept in Gemfile.lock.
 # Use postgresql as the database for Active Record
 gem "pg"
 # Use the Puma web server
-gem "puma"
-
+gem "puma", ">= 8.0.2"
 ##--- gems for authentication & authorization ---##
 gem 'devise', '>= 4.9.4'
-gem 'devise-secure_password', git: 'https://github.com/chatwoot/devise-secure_password', branch: 'chatwoot'
 gem 'devise_token_auth', '>= 1.2.3'
 
 # authorization
-gem "jwt"
+gem "jwt", ">= 3.2.0"
 gem "pundit"
 gem "flag_shih_tzu"
 
@@ -50,7 +49,7 @@ gem "aws-sdk-s3", require: false
 # API & Serialization
 gem "rack-cors", "2.0.0", require: "rack/cors"
 gem "kaminari"
-gem "oj", "~> 3.16"
+gem "oj", "~> 3.17.3"
 
 # Validation & Utilities
 gem "valid_email2"

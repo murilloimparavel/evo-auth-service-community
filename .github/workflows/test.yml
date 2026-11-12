@@ -14,7 +14,7 @@ on:
 jobs:
   rspec:
     name: RSpec
-    # Pin the runner while the application intentionally tests Ruby 3.4.4,
+    # Pin the runner while the application intentionally tests Ruby 3.4.12,
     # which is not prebuilt for the newer ubuntu-latest image yet.
     runs-on: ubuntu-24.04
 
@@ -52,7 +52,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           # Keep CI aligned with the production image's .ruby-version.
-          ruby-version: '3.4.4'
+          ruby-version: '3.4.12'
           bundler-cache: true
 
       - name: Prepare database

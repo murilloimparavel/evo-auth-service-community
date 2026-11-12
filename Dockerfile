@@ -2,36 +2,46 @@
 # EVO-AUTH-SERVICE - Development Dockerfile
 # =============================================================================
 
-# Use Ruby 3.4.4 as specified in the project
-ARG RUBY_VERSION=3.4.4
-FROM ruby:$RUBY_VERSION-slim
+# Use the patched Ruby 3.4 line on Debian Trixie.
+ARG RUBY_VERSION=3.4.12
+ARG RAILS_ENV=development
+FROM ruby:${RUBY_VERSION}-slim-trixie AS base
+
+# Keep the runtime base current with Debian security updates.
+RUN apt-get update -qq && \
+    apt-get upgrade -y --no-install-recommends && \
+    apt-get install --no-install-recommends -y \
+    libpq5 \
+    libyaml-0-2 \
+    && rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+FROM base AS build
 
 # Set working directory
 WORKDIR /rails
+ARG RAILS_ENV
 
-# Install system dependencies
+# Install build dependencies and the tools needed by the local development image.
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
     build-essential \
-    curl \
     git \
     libpq-dev \
     libyaml-dev \
     pkg-config \
-    postgresql-client \
-    libjemalloc2 \
-    libvips \
     && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # RAILS_ENV is configurable at build time: defaults to 'development' (keeps the
 # local compose working); pass --build-arg RAILS_ENV=production for deploy images.
-ARG RAILS_ENV=development
 ENV RAILS_ENV=${RAILS_ENV} \
     BUNDLE_PATH="/usr/local/bundle"
 
-# Copy Gemfile and install dependencies
+# Copy Gemfile and install dependencies. Production images omit development and
+# test-only gems, reducing runtime surface while preserving local Docker Compose.
 COPY Gemfile Gemfile.lock ./
-RUN bundle install
+RUN if [ "$RAILS_ENV" = "production" ]; then \
+      bundle config set --local without 'development test'; \
+    fi && bundle install
 
 # Copy application code (excluding problematic files)
 COPY --chown=1000:1000 . .
@@ -56,6 +66,18 @@ RUN chmod +x /usr/local/bin/evo-auth-entrypoint
 # entrypoint it aborts the boot.
 RUN sed -i 's/\r$//' /usr/local/bin/evo-auth-healthcheck /usr/local/bin/evo-auth-entrypoint bin/* \
     && chmod +x bin/*
+
+FROM base AS runtime
+WORKDIR /rails
+
+ARG RAILS_ENV
+ENV RAILS_ENV=${RAILS_ENV} \
+    BUNDLE_PATH="/usr/local/bundle"
+
+COPY --from=build /usr/local/bundle /usr/local/bundle
+COPY --from=build /rails /rails
+COPY --from=build /usr/local/bin/evo-auth-healthcheck /usr/local/bin/evo-auth-healthcheck
+COPY --from=build /usr/local/bin/evo-auth-entrypoint /usr/local/bin/evo-auth-entrypoint
 
 # Create non-root user for security
 RUN groupadd --system --gid 1000 rails && \
