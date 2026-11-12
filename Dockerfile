@@ -13,6 +13,7 @@ RUN apk update && \
     apk add --no-cache \
     bash \
     libpq \
+    tzdata \
     yaml
 
 FROM base AS build
