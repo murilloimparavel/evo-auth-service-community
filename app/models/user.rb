@@ -134,7 +134,7 @@ class User < ApplicationRecord
          :confirmable,
          :omniauthable, omniauth_providers: [:google_oauth2, :github]
 
-  enum availability: { online: 0, offline: 1, busy: 2 }
+  enum :availability, { online: 0, offline: 1, busy: 2 }
 
   validates :email, presence: true
   validate :password_complexity

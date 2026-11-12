@@ -28,7 +28,7 @@
 
 ## About
 
-**Evo CRM Auth Service** is the authentication and authorization microservice of the Evo CRM Community. Built on Ruby on Rails 7.1, it provides Bearer token authentication, OAuth 2.0 (Doorkeeper), Multi-Factor Authentication (TOTP, Email OTP, backup codes), Role-Based Access Control with simple `account_owner` / `agent` roles, and LGPD-compliant audit logging.
+**Evo CRM Auth Service** is the authentication and authorization microservice of the Evo CRM Community. Built on Ruby on Rails 8.0, it provides Bearer token authentication, OAuth 2.0 (Doorkeeper), Multi-Factor Authentication (TOTP, Email OTP, backup codes), Role-Based Access Control with simple `account_owner` / `agent` roles, and LGPD-compliant audit logging.
 
 ## Part of the Evo CRM Community
 
@@ -72,8 +72,8 @@ The Community Edition is **single-tenant** by design — one account, no multi-t
 
 ### Prerequisites
 
-- **Ruby** 3.4.4
-- **Rails** 7.1+
+- **Ruby** 3.4.12
+- **Rails** 8.0.5.2+
 - **PostgreSQL** 12+
 - **Redis** 6+
 

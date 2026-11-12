@@ -5,7 +5,7 @@ module TwoFactorAuthenticatable
 
   included do
     # MFA methods enum - avoiding 'none' as it conflicts with ActiveRecord
-    enum mfa_method: {
+    enum :mfa_method, {
       disabled: 0,
       totp: 1,
       email: 2

@@ -1,21 +1,38 @@
 source "https://rubygems.org"
 
-ruby '3.4.4'
+ruby '3.4.12'
 
 # Rails Framework - matching Evolution version
-gem "rails", "~> 7.1"
+gem "rails", "~> 8.0.5"
+# Keep patched versions when the Ruby base image exposes vulnerable default gems.
+gem "erb", ">= 6.0.4"
+gem "resolv", ">= 0.7.2"
+gem "uri", ">= 1.0.4"
+gem "zlib", ">= 3.2.3"
+# Security floors for transitive runtime gems found in the production image scan.
+gem "addressable", ">= 2.9.0"
+gem "bcrypt", ">= 3.1.22"
+gem "concurrent-ruby", ">= 1.3.7"
+gem "crass", ">= 1.0.7"
+gem "faraday", ">= 2.14.3"
+gem "net-imap", ">= 0.6.4"
+gem "nokogiri", ">= 1.19.3"
+gem "oauth2", ">= 2.0.22"
+gem "rack", ">= 3.2.8"
+gem "rack-session", ">= 2.1.2"
+gem "websocket-driver", ">= 0.8.2"
 # Use postgresql as the database for Active Record
 gem "pg"
 # Use the Puma web server
-gem "puma"
+gem "puma", "~> 7.2.1"
 
 ##--- gems for authentication & authorization ---##
 gem 'devise', '>= 4.9.4'
-gem 'devise-secure_password', git: 'https://github.com/chatwoot/devise-secure_password', branch: 'chatwoot'
+gem 'devise-secure_password', git: 'https://github.com/chatwoot/devise-secure_password', ref: '886c86d277739b0f92c9b41cf9624afab3db1059'
 gem 'devise_token_auth', '>= 1.2.3'
 
 # authorization
-gem "jwt"
+gem "jwt", "~> 2.10.3"
 gem "pundit"
 gem "flag_shih_tzu"
 
@@ -50,7 +67,7 @@ gem "aws-sdk-s3", require: false
 # API & Serialization
 gem "rack-cors", "2.0.0", require: "rack/cors"
 gem "kaminari"
-gem "oj", "~> 3.16"
+gem "oj", ">= 3.17.3"
 
 # Validation & Utilities
 gem "valid_email2"
