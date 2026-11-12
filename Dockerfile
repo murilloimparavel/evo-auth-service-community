@@ -19,6 +19,7 @@ RUN apt-get update -qq && \
     libyaml-dev \
     pkg-config \
     postgresql-client \
+    zlib1g-dev \
     libjemalloc2 \
     libvips \
     && rm -rf /var/lib/apt/lists /var/cache/apt/archives
