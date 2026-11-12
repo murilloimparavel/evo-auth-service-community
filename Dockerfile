@@ -11,6 +11,7 @@ FROM ruby:${RUBY_VERSION}-alpine3.24 AS base
 RUN apk update && \
     apk upgrade --no-cache && \
     apk add --no-cache \
+    bash \
     libpq \
     yaml
 
