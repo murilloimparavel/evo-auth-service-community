@@ -14,7 +14,9 @@ on:
 jobs:
   rspec:
     name: RSpec
-    runs-on: ubuntu-latest
+    # Pin the runner while the application intentionally tests Ruby 3.4.4,
+    # which is not prebuilt for the newer ubuntu-latest image yet.
+    runs-on: ubuntu-24.04
 
     services:
       postgres:
@@ -49,12 +51,12 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          # Reads .ruby-version; bundler-cache handles install + gem caching.
-          ruby-version-file: .ruby-version
+          # Keep CI aligned with the production image's .ruby-version.
+          ruby-version: '3.4.4'
           bundler-cache: true
 
       - name: Prepare database
-        run: bundle exec rails db:create db:schema:load
+        run: bundle exec rails db:create db:schema:load db:migrate
 
       # Request specs that are red on develop already. Gating on the whole suite
       # would mean merging this workflow already broken, which is how a repo ends

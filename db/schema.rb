@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_22_010001) do
+ActiveRecord::Schema[7.1].define(version: 2026_11_12_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -156,6 +156,18 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_22_010001) do
     t.index ["name"], name: "index_roles_on_name", unique: true
     t.index ["type", "name"], name: "index_roles_on_type_and_name", unique: true
     t.index ["type"], name: "index_roles_on_type"
+  end
+
+  create_table "sidekiq_job_receipts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "jid", null: false
+    t.string "job_class", null: false
+    t.string "queue", null: false
+    t.string "payload_sha256", limit: 64, null: false
+    t.datetime "completed_at", precision: 6, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["completed_at"], name: "index_sidekiq_job_receipts_on_completed_at"
+    t.index ["jid"], name: "index_sidekiq_job_receipts_on_jid", unique: true
   end
 
   create_table "runtime_configs", force: :cascade do |t|
