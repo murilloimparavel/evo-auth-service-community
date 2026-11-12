@@ -56,7 +56,7 @@ jobs:
           bundler-cache: true
 
       - name: Prepare database
-        run: bundle exec rails db:create db:schema:load
+        run: bundle exec rails db:create db:schema:load db:migrate
 
       # Request specs that are red on develop already. Gating on the whole suite
       # would mean merging this workflow already broken, which is how a repo ends
