@@ -36,5 +36,30 @@ jobs:
           # defaults to development for the local compose).
           build-args: |
             RAILS_ENV=production
+          tags: evo-auth-service-community:pr
+          load: true
           cache-from: type=gha,scope=linux/amd64
           cache-to: type=gha,scope=linux/amd64,mode=max
+
+      - name: Build ARM64 image without publishing
+        uses: docker/build-push-action@14487ce63c7a62a4a324b0bfb37086795e31c6c1 # v6.16.0
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/arm64
+          push: false
+          build-args: |
+            RAILS_ENV=production
+          cache-from: type=gha,scope=linux/arm64
+          cache-to: type=gha,scope=linux/arm64,mode=max
+
+      - name: Scan production amd64 image for HIGH and CRITICAL vulnerabilities
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
+        with:
+          scan-type: image
+          image-ref: evo-auth-service-community:pr
+          scanners: vuln
+          severity: CRITICAL,HIGH
+          ignore-unfixed: false
+          exit-code: '1'
+          format: table
