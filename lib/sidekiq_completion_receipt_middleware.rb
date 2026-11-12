@@ -9,6 +9,8 @@ require "json"
 class SidekiqCompletionReceiptMiddleware
   def call(_worker, job, queue)
     jid = job.fetch("jid")
+    job_class = job["wrapped"] || job.fetch("class")
+    queue_name = queue.to_s
     payload_sha256 = Digest::SHA256.hexdigest(JSON.generate(job["args"] || []))
     result = nil
 
@@ -22,15 +24,17 @@ class SidekiqCompletionReceiptMiddleware
 
       receipt = SidekiqJobReceipt.find_by(jid: jid)
       if receipt
-        unless receipt.payload_sha256 == payload_sha256
+        unless receipt.job_class == job_class &&
+               receipt.queue == queue_name &&
+               receipt.payload_sha256 == payload_sha256
           raise "Completed Sidekiq JID #{jid} was replayed with a different payload"
         end
       else
         result = yield
         SidekiqJobReceipt.create!(
           jid: jid,
-          job_class: job["wrapped"] || job.fetch("class"),
-          queue: queue.to_s,
+          job_class: job_class,
+          queue: queue_name,
           payload_sha256: payload_sha256,
           completed_at: Time.current
         )

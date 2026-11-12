@@ -43,4 +43,16 @@ RSpec.describe SidekiqCompletionReceiptMiddleware do
     end.not_to raise_error
     expect(SidekiqJobReceipt.where(jid: job.fetch("jid")).count).to eq(1)
   end
+
+  it "rejects a reused JID when its class or queue changes" do
+    middleware.call(nil, job, "licensing") { :first_run }
+
+    expect do
+      middleware.call(nil, job.merge("wrapped" => "Licensing::SetupJob"), "licensing") { :wrong_class }
+    end.to raise_error(/different payload/)
+
+    expect do
+      middleware.call(nil, job, "default") { :wrong_queue }
+    end.to raise_error(/different payload/)
+  end
 end
