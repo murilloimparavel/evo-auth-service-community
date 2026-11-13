@@ -2,15 +2,15 @@
 # EVO-AUTH-SERVICE - Development Dockerfile
 # =============================================================================
 
-# Use Ruby 3.4.4 as specified in the project
-ARG RUBY_VERSION=3.4.4
-FROM ruby:$RUBY_VERSION-slim
+# Pin the Ruby patch release, Debian suite, and upstream multi-platform manifest.
+FROM ruby:3.4.12-slim-trixie@sha256:65680693964528b522a38d85ec5065538c7ab9e75268802aab9770f39ee56de0
 
 # Set working directory
 WORKDIR /rails
 
 # Install system dependencies
 RUN apt-get update -qq && \
+    apt-get upgrade --no-install-recommends -y && \
     apt-get install --no-install-recommends -y \
     build-essential \
     curl \
@@ -19,6 +19,7 @@ RUN apt-get update -qq && \
     libyaml-dev \
     pkg-config \
     postgresql-client \
+    zlib1g-dev \
     libjemalloc2 \
     libvips \
     && rm -rf /var/lib/apt/lists /var/cache/apt/archives
